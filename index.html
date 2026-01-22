@@ -171,114 +171,76 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         camera.position.z = 15;
 
-        // Create realistic Earth with NASA textures
-        const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
+        // Create floating particles (stars)
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 100;
+        const posArray = new Float32Array(particlesCount * 3);
 
-        // Load realistic Earth texture from NASA
-        const textureLoader = new THREE.TextureLoader();
-
-        // Using high-quality Earth texture from public CDN
-        const earthTexture = textureLoader.load(
-            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg'
-        );
-
-        // Load bump map for terrain detail
-        const bumpMap = textureLoader.load(
-            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg'
-        );
-
-        // Load specular map for ocean shine
-        const specularMap = textureLoader.load(
-            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_specular_2048.jpg'
-        );
-
-        const earthMaterial = new THREE.MeshPhongMaterial({
-            map: earthTexture,
-            bumpMap: bumpMap,
-            bumpScale: 0.05,
-            specularMap: specularMap,
-            specular: new THREE.Color('grey'),
-            shininess: 10,
-            emissive: new THREE.Color(0x112244),
-            emissiveIntensity: 0.05
-        });
-
-        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-        scene.add(earth);
-
-        // Create realistic atmosphere glow using shader
-        const atmosphereGeometry = new THREE.SphereGeometry(5.3, 64, 64);
-        const atmosphereMaterial = new THREE.ShaderMaterial({
-            vertexShader: `
-                varying vec3 vNormal;
-                void main() {
-                    vNormal = normalize(normalMatrix * normal);
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                }
-            `,
-            fragmentShader: `
-                varying vec3 vNormal;
-                void main() {
-                    float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
-                    gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity;
-                }
-            `,
-            side: THREE.BackSide,
-            blending: THREE.AdditiveBlending,
-            transparent: true
-        });
-        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-        scene.add(atmosphere);
-
-        // Create realistic starfield background
-        const starsGeometry = new THREE.BufferGeometry();
-        const starCount = 2000;
-        const starPositions = new Float32Array(starCount * 3);
-        const starColors = new Float32Array(starCount * 3);
-
-        for (let i = 0; i < starCount; i++) {
-            starPositions[i * 3] = (Math.random() - 0.5) * 200;
-            starPositions[i * 3 + 1] = (Math.random() - 0.5) * 200;
-            starPositions[i * 3 + 2] = (Math.random() - 0.5) * 200;
-
-            // Vary star colors (white to slight blue/yellow tint)
-            const colorVariation = 0.8 + Math.random() * 0.2;
-            starColors[i * 3] = colorVariation;
-            starColors[i * 3 + 1] = colorVariation;
-            starColors[i * 3 + 2] = 0.9 + Math.random() * 0.1;
+        for (let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
         }
 
-        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        starsGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-
-        const starsMaterial = new THREE.PointsMaterial({
-            size: 0.15,
-            vertexColors: true,
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.1,
+            color: 0xffcc33,
             transparent: true,
-            opacity: 0.9
+            opacity: 0.8
         });
 
-        const stars = new THREE.Points(starsGeometry, starsMaterial);
-        scene.add(stars);
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
 
-        // Add realistic lighting (sun from one side)
-        const ambientLight = new THREE.AmbientLight(0x333333);
-        const sunLight = new THREE.DirectionalLight(0xffffff, 2);
-        sunLight.position.set(5, 3, 5);
+        // Create central sphere (Mysore)
+        const geometry = new THREE.SphereGeometry(2, 32, 32);
+        const material = new THREE.MeshStandardMaterial({
+            color: 0xdd2476,
+            roughness: 0.4,
+            metalness: 0.6,
+            emissive: 0xdd2476,
+            emissiveIntensity: 0.2
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
 
-        scene.add(ambientLight, sunLight);
+        // Create orbiting location pins
+        const pinGroup = new THREE.Group();
+        const pinGeo = new THREE.ConeGeometry(0.5, 1.5, 32);
+        const pinMatPink = new THREE.MeshStandardMaterial({ color: 0xdd2476 });
+        const pinMatGold = new THREE.MeshStandardMaterial({ color: 0xffcc33 });
+
+        for (let i = 0; i < 6; i++) {
+            const pin = new THREE.Mesh(pinGeo, i % 2 === 0 ? pinMatPink : pinMatGold);
+            const angle = (i / 6) * Math.PI * 2;
+            const radius = 6;
+
+            pin.position.x = Math.cos(angle) * radius;
+            pin.position.z = Math.sin(angle) * radius;
+            pin.rotation.x = Math.PI;
+
+            pinGroup.add(pin);
+        }
+        scene.add(pinGroup);
+
+        // Lighting
+        const pointLight = new THREE.PointLight(0xffffff, 20, 100);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
 
         // Animation Loop
-        let time = 0;
         function animate() {
             requestAnimationFrame(animate);
-            time += 0.005;
 
-            // Rotate Earth slowly (realistic speed)
-            earth.rotation.y += 0.0005;
+            sphere.rotation.y += 0.005;
+            pinGroup.rotation.y -= 0.01;
+            particlesMesh.rotation.y += 0.002;
 
-            // Gentle rotation of starfield
-            stars.rotation.y += 0.0002;
+            // Pulse effect
+            const scale = 1 + Math.sin(Date.now() * 0.002) * 0.1;
+            sphere.scale.set(scale, scale, scale);
 
             renderer.render(scene, camera);
         }
