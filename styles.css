@@ -2,33 +2,25 @@
    CSS Custom Properties (Design System)
    =================================== */
 :root {
-    /* Background Colors */
-    --color-bg-dark: #050505;
-    --color-bg-medium: rgba(255, 255, 255, 0.08);
-    --color-bg-light: rgba(255, 255, 255, 0.12);
-    --color-bg-card: rgba(255, 255, 255, 0.08);
+    /* Colors */
+    --color-primary: #6366f1;
+    --color-primary-dark: #4f46e5;
+    --color-primary-light: #818cf8;
+    --color-secondary: #ec4899;
+    --color-accent: #f59e0b;
 
-    /* Accent Colors */
-    --color-primary: #dd2476;
-    --color-primary-dark: #c41d66;
-    --color-primary-light: #ff2e88;
-    --color-secondary: #ffcc33;
-    --color-accent: #ffcc33;
-    --color-gradient: linear-gradient(135deg, #ff512f, #dd2476);
+    --color-bg-dark: #0f172a;
+    --color-bg-medium: #1e293b;
+    --color-bg-light: #334155;
+    --color-bg-card: rgba(30, 41, 59, 0.8);
 
-    /* Text Colors */
-    --color-text-primary: #ffffff;
-    --color-text-secondary: rgba(255, 255, 255, 0.75);
-    --color-text-muted: rgba(255, 255, 255, 0.6);
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #cbd5e1;
+    --color-text-muted: #94a3b8;
 
-    /* Status Colors */
     --color-success: #10b981;
     --color-warning: #f59e0b;
     --color-error: #ef4444;
-
-    /* Borders */
-    --border-soft: rgba(255, 255, 255, 0.12);
-    --border-lighter: rgba(255, 255, 255, 0.08);
 
     /* Spacing */
     --spacing-xs: 0.5rem;
@@ -45,11 +37,11 @@
     --radius-xl: 1.5rem;
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 20px rgba(221, 36, 118, 0.4);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
 
     /* Transitions */
     --transition-fast: 150ms ease-in-out;
@@ -58,7 +50,14 @@
 
     /* Typography */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-display: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+--font-display: 'Poppins',
+-apple-system,
+BlinkMacSystemFont,
+'Segoe UI',
+sans-serif;
 }
 
 /* ===================================
@@ -173,28 +172,14 @@ body {
 }
 
 /* ===================================
-   3D Canvas Background
-   =================================== */
-#hero-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: -1;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-/* ===================================
    Hero Section
    =================================== */
 .hero {
     position: relative;
     padding: var(--spacing-2xl) 0;
     text-align: center;
-    background: linear-gradient(180deg, rgba(221, 36, 118, 0.1) 0%, transparent 100%);
-    min-height: 60vh;
+    background: linear-gradient(135deg, var(--color-bg-medium), var(--color-bg-dark));
+    min-height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;
