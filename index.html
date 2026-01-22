@@ -26,8 +26,6 @@
 </head>
 
 <body>
-
-
     <!-- Header -->
     <header class="header">
         <div class="container">
@@ -143,75 +141,6 @@
 
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
-
-    <!-- 3D Background Animation -->
-    <script>
-        // ===== THREE.JS HERO BACKGROUND =====
-        const canvas = document.getElementById('hero-canvas');
-        const scene = new THREE.Scene();
-
-        const camera = new THREE.PerspectiveCamera(
-            75,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            1000
-        );
-
-        const renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            antialias: true,
-            alpha: true
-        });
-
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        camera.position.z = 15;
-
-        // Create 3D Torus Knot
-        const geometry = new THREE.TorusKnotGeometry(10, 3, 120, 16);
-        const material = new THREE.MeshStandardMaterial({
-            color: 0xdd2476,
-            metalness: 0.7,
-            roughness: 0.2,
-            emissive: 0xff2e88,
-            emissiveIntensity: 0.2
-        });
-
-        const knot = new THREE.Mesh(geometry, material);
-        scene.add(knot);
-
-        // Add Lights
-        const pointLight = new THREE.PointLight(0xffffff, 20, 100);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-
-        // Animation Loop
-        function animate() {
-            requestAnimationFrame(animate);
-            knot.rotation.x += 0.01;
-            knot.rotation.y += 0.01;
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Handle Resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Fade out 3D background on scroll
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const heroHeight = document.querySelector('.hero').offsetHeight;
-            const opacity = Math.max(0, 1 - (scrollY / heroHeight));
-            canvas.style.opacity = opacity;
-        });
-    </script>
 </body>
 
 </html>
