@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Hidden Mysore</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <h1 class="login-logo">
+                    <span class="logo-icon">🔐</span>
+                    Admin Login
+                </h1>
+                <p class="login-subtitle">Hidden Mysore Management Portal</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                </div>
+
+                <div id="loginError" class="error-message"></div>
+
+                <button type="submit" class="btn-primary btn-full">Login</button>
+
+                <div class="login-hint">
+                    <p>Default credentials: <strong>admin</strong> / <strong>admin123</strong></p>
+                </div>
+            </form>
+
+            <a href="index.html" class="back-link">← Back to Website</a>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="logo">
+                        <span class="logo-icon">📍</span>
+                        Hidden Mysore Admin
+                    </h1>
+                    <nav class="nav">
+                        <span class="nav-text">Welcome, <strong id="adminUsername">Admin</strong></span>
+                        <button id="logoutBtn" class="btn-text">Logout</button>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Dashboard Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📍</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalPlaces">0</div>
+                            <div class="stat-label">Total Places</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">☕</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalCafes">0</div>
+                            <div class="stat-label">Cafes</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌊</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalLakes">0</div>
+                            <div class="stat-label">Lakes</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏛️</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalMuseums">0</div>
+                            <div class="stat-label">Museums</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add New Place Button -->
+                <div class="action-bar">
+                    <button id="addPlaceBtn" class="btn-primary">
+                        <span>➕</span> Add New Place
+                    </button>
+                </div>
+
+                <!-- Places Management Table -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3 class="table-title">Manage Places</h3>
+                        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search places...">
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="places-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Rating</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="placesTableBody">
+                                <!-- Places will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Place Modal -->
+    <div id="placeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Place</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+
+            <form id="placeForm" class="place-form">
+                <input type="hidden" id="placeId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="placeName" class="form-label">Place Name *</label>
+                        <input type="text" id="placeName" class="form-input" placeholder="Enter place name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="placeCategory" class="form-label">Category *</label>
+                        <select id="placeCategory" class="form-input" required>
+                            <option value="">Select category</option>
+                            <option value="cafe">☕ Cafe</option>
+                            <option value="lake">🌊 Lake</option>
+                            <option value="viewpoint">🏔️ Viewpoint</option>
+                            <option value="museum">🏛️ Museum</option>
+                            <option value="park">🌳 Park</option>
+                            <option value="heritage">🏰 Heritage</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="placeDescription" class="form-label">Description *</label>
+                    <textarea id="placeDescription" class="form-input" rows="3" placeholder="Enter description"
+                        required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="placeLat" class="form-label">Latitude *</label>
+                        <input type="number" id="placeLat" class="form-input" step="0.000001" placeholder="12.2958"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="placeLng" class="form-label">Longitude *</label>
+                        <input type="number" id="placeLng" class="form-input" step="0.000001" placeholder="76.6394"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="placeRating" class="form-label">Rating *</label>
+                        <input type="number" id="placeRating" class="form-input" min="0" max="5" step="0.1"
+                            placeholder="4.5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="placeImage" class="form-label">Image URL</label>
+                        <input type="url" id="placeImage" class="form-input"
+                            placeholder="https://example.com/image.jpg">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="placeHighlights" class="form-label">Highlights (comma-separated)</label>
+                    <input type="text" id="placeHighlights" class="form-input"
+                        placeholder="Feature 1, Feature 2, Feature 3">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Place</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <button class="modal-close" id="closeDeleteModal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deletePlaceName"></strong>?</p>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="cancelDeleteBtn">Cancel</button>
+                <button type="button" class="btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="admin.js"></script>
+</body>
+
+</html>

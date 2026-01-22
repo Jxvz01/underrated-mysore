@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Discover hidden gems and underrated places in Mysore - cafes, lakes, viewpoints, museums, and more. Get directions and explore nearby locations.">
+    <title>Underrated Mysore • Explore Hidden Gems</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+</head>
+
+<body>
+    <!-- 3D Canvas Background -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">📍</span>
+                    Hidden Mysore
+                </h1>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link active">Explore</a>
+                    <a href="admin.html" class="nav-link">Admin</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2 class="hero-title">Discover Mysore's Hidden Gems</h2>
+            <p class="hero-subtitle">Explore underrated cafes, serene lakes, breathtaking viewpoints, and cultural
+                treasures</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <h3 class="filter-title">Categories</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-category="all">
+                        <span class="filter-icon">🌟</span>
+                        All Places
+                    </button>
+                    <button class="filter-btn" data-category="cafe">
+                        <span class="filter-icon">☕</span>
+                        Cafes
+                    </button>
+                    <button class="filter-btn" data-category="lake">
+                        <span class="filter-icon">🌊</span>
+                        Lakes
+                    </button>
+                    <button class="filter-btn" data-category="viewpoint">
+                        <span class="filter-icon">🏔️</span>
+                        Viewpoints
+                    </button>
+                    <button class="filter-btn" data-category="museum">
+                        <span class="filter-icon">🏛️</span>
+                        Museums
+                    </button>
+                    <button class="filter-btn" data-category="park">
+                        <span class="filter-icon">🌳</span>
+                        Parks
+                    </button>
+                    <button class="filter-btn" data-category="heritage">
+                        <span class="filter-icon">🏰</span>
+                        Heritage
+                    </button>
+                </div>
+            </div>
+
+            <!-- Location Permission Banner -->
+            <div class="location-banner" id="locationBanner">
+                <div class="location-banner-content">
+                    <span class="location-icon">📍</span>
+                    <p>Enable location to discover places near you</p>
+                    <button class="btn-primary" id="enableLocationBtn">Enable Location</button>
+                    <button class="btn-text" id="dismissLocationBtn">Maybe Later</button>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Map Section -->
+                <div class="map-section">
+                    <div class="map-header">
+                        <h3 class="map-title">Map View</h3>
+                        <div class="map-stats">
+                            <span id="placeCount">0 places</span>
+                        </div>
+                    </div>
+                    <div id="map" class="map-container"></div>
+                </div>
+
+                <!-- Places List Section -->
+                <div class="places-section">
+                    <div class="places-header">
+                        <h3 class="places-title">Places</h3>
+                        <div class="sort-options">
+                            <select id="sortSelect" class="sort-select">
+                                <option value="name">Sort by Name</option>
+                                <option value="distance">Sort by Distance</option>
+                                <option value="rating">Sort by Rating</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="placesList" class="places-list">
+                        <!-- Places will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 • Underrated Mysore • Discover the unexplored beauty</p>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+
+    <!-- 3D Background Animation -->
+    <script>
+        // ===== THREE.JS HERO BACKGROUND =====
+        const canvas = document.getElementById('hero-canvas');
+        const scene = new THREE.Scene();
+
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            antialias: true,
+            alpha: true
+        });
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.z = 15;
+
+        // Create realistic Earth with NASA textures
+        const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
+
+        // Load realistic Earth texture from NASA
+        const textureLoader = new THREE.TextureLoader();
+
+        // Using high-quality Earth texture from public CDN
+        const earthTexture = textureLoader.load(
+            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_atmos_2048.jpg'
+        );
+
+        // Load bump map for terrain detail
+        const bumpMap = textureLoader.load(
+            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg'
+        );
+
+        // Load specular map for ocean shine
+        const specularMap = textureLoader.load(
+            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_specular_2048.jpg'
+        );
+
+        const earthMaterial = new THREE.MeshPhongMaterial({
+            map: earthTexture,
+            bumpMap: bumpMap,
+            bumpScale: 0.05,
+            specularMap: specularMap,
+            specular: new THREE.Color('grey'),
+            shininess: 10,
+            emissive: new THREE.Color(0x112244),
+            emissiveIntensity: 0.05
+        });
+
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        scene.add(earth);
+
+        // Create realistic atmosphere glow using shader
+        const atmosphereGeometry = new THREE.SphereGeometry(5.3, 64, 64);
+        const atmosphereMaterial = new THREE.ShaderMaterial({
+            vertexShader: `
+                varying vec3 vNormal;
+                void main() {
+                    vNormal = normalize(normalMatrix * normal);
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vNormal;
+                void main() {
+                    float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+                    gl_FragColor = vec4(0.3, 0.6, 1.0, 1.0) * intensity;
+                }
+            `,
+            side: THREE.BackSide,
+            blending: THREE.AdditiveBlending,
+            transparent: true
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+        scene.add(atmosphere);
+
+        // Create realistic starfield background
+        const starsGeometry = new THREE.BufferGeometry();
+        const starCount = 2000;
+        const starPositions = new Float32Array(starCount * 3);
+        const starColors = new Float32Array(starCount * 3);
+
+        for (let i = 0; i < starCount; i++) {
+            starPositions[i * 3] = (Math.random() - 0.5) * 200;
+            starPositions[i * 3 + 1] = (Math.random() - 0.5) * 200;
+            starPositions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+
+            // Vary star colors (white to slight blue/yellow tint)
+            const colorVariation = 0.8 + Math.random() * 0.2;
+            starColors[i * 3] = colorVariation;
+            starColors[i * 3 + 1] = colorVariation;
+            starColors[i * 3 + 2] = 0.9 + Math.random() * 0.1;
+        }
+
+        starsGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        starsGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+
+        const starsMaterial = new THREE.PointsMaterial({
+            size: 0.15,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.9
+        });
+
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        // Add realistic lighting (sun from one side)
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2);
+        sunLight.position.set(5, 3, 5);
+
+        scene.add(ambientLight, sunLight);
+
+        // Animation Loop
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.005;
+
+            // Rotate Earth slowly (realistic speed)
+            earth.rotation.y += 0.0005;
+
+            // Gentle rotation of starfield
+            stars.rotation.y += 0.0002;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Fade out 3D background on scroll
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const heroHeight = document.querySelector('.hero').offsetHeight;
+            const opacity = Math.max(0, 1 - (scrollY / heroHeight));
+            canvas.style.opacity = opacity;
+        });
+    </script>
+</body>
+
+</html>
